@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Will you be my Valentine?</title>
+  <title>Will you be my Valentine? 💕</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💕</text></svg>" />
 
   <!-- Confetti library -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
@@ -41,6 +42,41 @@
       overflow: hidden;
       padding: 16px;
       transition: background 0.4s ease;
+      position: relative;
+    }
+
+    /* Floating hearts background */
+    .floating-hearts {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .heart-particle {
+      position: absolute;
+      font-size: 20px;
+      opacity: 0.3;
+      animation: float-up 8s linear infinite;
+      will-change: transform, opacity;
+    }
+
+    @keyframes float-up {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.3;
+      }
+      90% {
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
     }
 
     /* FULL-SCREEN CONFETTI CANVAS */
@@ -58,10 +94,13 @@
       padding: 32px 6vw;
       background: var(--card);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       border-radius: 24px;
       text-align: center;
       box-shadow: 0 20px 60px rgba(0,0,0,.15);
       transition: all 0.4s ease;
+      position: relative;
+      z-index: 1;
     }
 
     .art {
@@ -108,14 +147,15 @@
     }
 
     button:active {
-      transform: translateY(-50%) scale(0.95);
+      transform: translateY(-50%) scale(0.95) !important;
     }
 
     #yesBtn {
       left: 18%;
       background: var(--yes);
       color: #fff;
-      transform-origin: center;
+      transform-origin: center center;
+      will-change: transform;
     }
     
     #yesBtn:hover { 
@@ -183,17 +223,17 @@
       }
       .button-zone {
         width: 95vw;
-        height: 180px;
+        height: 200px;
       }
       button {
         font-size: 18px;
         padding: 16px 24px;
       }
       #yesBtn {
-        left: 10%;
+        left: 5%;
       }
       #noBtn {
-        left: 60%;
+        left: 65%;
       }
     }
 
@@ -271,6 +311,7 @@
       font-size: clamp(32px, 5vw, 52px);
       margin: 12px 0 20px;
       font-weight: 800;
+      color: #ff3b7a;
       background: linear-gradient(135deg, #ff3b7a, #ff6b9d);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -278,6 +319,7 @@
     }
 
     body.dark .result h2 {
+      color: #ff5a8f;
       background: linear-gradient(135deg, #ff5a8f, #ff8bb5);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -324,6 +366,9 @@
 </head>
 
 <body>
+  <!-- Floating hearts background -->
+  <div class="floating-hearts" id="floatingHearts"></div>
+
   <canvas id="confettiCanvas"></canvas>
 
   <button id="darkToggle">🌙 Dark Mode</button>
@@ -417,7 +462,7 @@
 
     <section class="result" id="result">
       <h2>YAY! 🎉💕</h2>
-      <p style="font-size: 20px; margin: 16px 0; color: inherit; opacity: 0.9;">You just made the happiest capybara in the world!</p>
+      <p style="font-size: 20px; margin: 16px 0; color: inherit; opacity: 0.9;">You just made the happiest capybara in the world! See you later!</p>
       <img
         class="fireworks"
         src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif"
@@ -427,6 +472,23 @@
   </main>
 
   <script>
+    // Create floating hearts background
+    function createFloatingHearts() {
+      const container = document.getElementById('floatingHearts');
+      const hearts = ['💕', '💖', '💗', '💝', '💓'];
+      
+      for (let i = 0; i < 15; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart-particle';
+        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.animationDelay = Math.random() * 8 + 's';
+        heart.style.animationDuration = (8 + Math.random() * 4) + 's';
+        container.appendChild(heart);
+      }
+    }
+    createFloatingHearts();
+
     // Dark mode toggle
     const darkToggle = document.getElementById('darkToggle');
     // Default to dark mode
@@ -497,7 +559,9 @@
     /* ---------- YES BUTTON GROWS ---------- */
     let yesScale = 1;
     function growYes() {
-      yesScale = Math.min(2.5, yesScale + 0.12);
+      // Limit scaling on mobile to prevent overflow
+      const maxScale = window.innerWidth < 600 ? 1.8 : 2.5;
+      yesScale = Math.min(maxScale, yesScale + 0.12);
       yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
     }
 
@@ -557,6 +621,7 @@
 
     // Hint phrases rotation
     const hintPhrases = [
+      'Lera, will you be my valentine? 💕',
       'Are you sure you want to say No? 😢',
       'The capybara will be sad... 💔',
       'Please don\'t click No! 🥺',
@@ -586,6 +651,8 @@
     }
 
     let detectionRadius = 140;
+    
+    // Handle both mouse and touch events
     zone.addEventListener("pointermove", e => {
       const b = noBtn.getBoundingClientRect();
       const d = Math.hypot(
@@ -601,6 +668,11 @@
         document.getElementById('capySad').style.display = 'none';
       }
     });
+    
+    // Increase detection radius on mobile for better touch interaction
+    if ('ontouchstart' in window) {
+      detectionRadius = 180;
+    }
 
     noBtn.addEventListener("click", e => {
       e.preventDefault();
@@ -612,8 +684,12 @@
     /* ---------- YES CLICK ---------- */
     yesBtn.addEventListener("click", () => {
       // Trigger blink animation using SVG animate
-      document.getElementById('blinkL').beginElement();
-      document.getElementById('blinkR').beginElement();
+      const blinkL = document.getElementById('blinkL');
+      const blinkR = document.getElementById('blinkR');
+      if (blinkL && blinkR) {
+        blinkL.beginElement();
+        blinkR.beginElement();
+      }
       
       // Fade out bubble and button zone
       zone.classList.add("fading");
@@ -685,11 +761,33 @@
     });
 
     // Random capybara blinks
+    function blinkCapybara() {
+      const blinkL = document.getElementById('blinkL');
+      const blinkR = document.getElementById('blinkR');
+      const eyeL = document.getElementById('capyEyeL');
+      const eyeR = document.getElementById('capyEyeR');
+      
+      // Try SVG animation first, fallback to manual animation
+      if (blinkL && blinkR && typeof blinkL.beginElement === 'function') {
+        blinkL.beginElement();
+        blinkR.beginElement();
+      } else if (eyeL && eyeR) {
+        // Fallback for browsers that don't support SVG animations
+        const originalRyL = eyeL.getAttribute('ry');
+        const originalRyR = eyeR.getAttribute('ry');
+        eyeL.setAttribute('ry', '1.5');
+        eyeR.setAttribute('ry', '1.5');
+        setTimeout(() => {
+          eyeL.setAttribute('ry', originalRyL || '7');
+          eyeR.setAttribute('ry', originalRyR || '7');
+        }, 220);
+      }
+    }
+    
     setInterval(() => {
       if (result.classList.contains('visible')) return;
       if (Math.random() > 0.7) {
-        document.getElementById('blinkL').beginElement();
-        document.getElementById('blinkR').beginElement();
+        blinkCapybara();
       }
     }, 4000);
   </script>
