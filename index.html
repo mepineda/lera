@@ -696,11 +696,15 @@
         blinkL.beginElement();
         blinkR.beginElement();
       }
-      
+
+      // Make capybara smile
+      document.getElementById('capySmile').style.display = '';
+      document.getElementById('capySad').style.display = 'none';
+
       // Fade out bubble and button zone
       zone.classList.add("fading");
       hint.classList.add("fading");
-      
+
       setTimeout(() => {
         zone.style.display = "none";
         hint.style.display = "none";
