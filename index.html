@@ -9,6 +9,14 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <style>
+    body.dark {
+      --bg1: #23272e;
+      --bg2: #181a1b;
+      --card: #23272ecc;
+      --yes: #ff3b7a;
+      --yesHover: #ff1f68;
+      color: #f3e9f7;
+    }
     :root {
       --bg1: #ffd6e7;
       --bg2: #ffeef6;
@@ -41,8 +49,8 @@
     }
 
     .card {
-      width: min(720px, 92vw);
-      padding: 26px 22px;
+      width: min(720px, 96vw);
+      padding: 22px 6vw;
       background: var(--card);
       backdrop-filter: blur(10px);
       border-radius: 22px;
@@ -51,7 +59,7 @@
     }
 
     .art {
-      width: min(260px, 80vw);
+      width: min(260px, 90vw);
       margin: 0 auto 10px;
       display: block;
       filter: drop-shadow(0 10px 14px rgba(0,0,0,.12));
@@ -64,8 +72,8 @@
 
     .button-zone {
       position: relative;
-      width: min(520px, 92%);
-      height: 150px;
+      width: min(520px, 98vw);
+      height: 170px;
       margin: 0 auto;
       touch-action: none;
     }
@@ -74,8 +82,8 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      padding: 16px 24px;
-      font-size: 18px;
+      padding: 20px 32px;
+      font-size: 22px;
       font-weight: 800;
       border-radius: 999px;
       border: none;
@@ -99,16 +107,122 @@
       color: #111827;
     }
 
-    .hint {
-      margin-top: 10px;
-      font-size: 13px;
-      opacity: .7;
+    .bubble {
+      display: inline-block;
+      position: relative;
+      margin-bottom: 8px;
+      margin-top: 0;
+      padding: 16px 20px;
+      font-size: 18px;
+      background: #fffbe7;
+      color: #7a5c2e;
+      border-radius: 18px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+      opacity: 1;
+      max-width: 92vw;
+      text-align: left;
+      z-index: 2;
+      transition: background 0.3s, color 0.3s;
+    }
+        @media (max-width: 600px) {
+          .card {
+            padding: 10vw 2vw;
+            border-radius: 14px;
+          }
+          .art {
+            width: 98vw;
+          }
+          .bubble {
+            font-size: 16px;
+            padding: 12px 8px;
+            max-width: 98vw;
+          }
+          .button-zone {
+            width: 99vw;
+            height: 180px;
+          }
+          button {
+            font-size: 20px;
+            padding: 18px 10vw;
+          }
+          #yesBtn {
+            left: 8%;
+          }
+          #noBtn {
+            left: 58%;
+          }
+        }
+    .bubble::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -16px;
+      width: 0;
+      height: 0;
+      border: 10px solid transparent;
+      border-top: 12px solid #fffbe7;
+      border-bottom: 0;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.04));
+      transition: border-top-color 0.3s;
+    }
+    body.dark .bubble {
+      background: #2d2d36;
+      color: #ffeef6;
+    }
+    body.dark .bubble::after {
+      border-top-color: #2d2d36;
+    }
+    body.dark .card {
+      background: var(--card);
+      color: #f3e9f7;
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+    }
+    body.dark h1, body.dark .result h2 {
+      color: #ffeef6;
+      text-shadow: 0 2px 8px #181a1b;
+    }
+    body.dark button {
+      background: #353545;
+      color: #ffeef6;
+      border: 1px solid #44445a;
+    }
+    body.dark #yesBtn {
+      background: var(--yes);
+      color: #fff;
+    }
+    body.dark #yesBtn:hover {
+      background: var(--yesHover);
+    }
+    body.dark #noBtn {
+      background: #44445a;
+      color: #ffeef6;
+    }
+    body.dark #darkToggle {
+      background: #353545 !important;
+      color: #ffeef6 !important;
+      border: 1px solid #44445a;
     }
 
     .result {
       display: none;
       margin-top: 18px;
       animation: pop .35s ease;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .result.visible {
+      display: block;
+      opacity: 1;
+    }
+
+    .bubble, .button-zone {
+      transition: opacity 0.5s;
+    }
+    .bubble.fading, .button-zone.fading {
+      opacity: 0;
+      pointer-events: none;
     }
 
     .result h2 {
@@ -132,53 +246,67 @@
 <body>
   <canvas id="confettiCanvas"></canvas>
 
+  <button id="darkToggle" style="position:absolute;top:18px;right:24px;z-index:1000;padding:8px 18px;border-radius:16px;border:none;background:#e5e7eb;color:#222;font-weight:700;cursor:pointer;transition:background 0.3s;">🌙 Dark Mode</button>
   <main class="card">
-    <!-- ANIMAL WITH HEART -->
+    <!-- HINT (message bubble above capybara) -->
+    <div class="bubble" id="hint">“No” seems a bit shy 😈</div>
+    <!-- CUTE CAPYBARA WITH HEART -->
     <svg class="art" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="fur" x1="0" x2="1">
-          <stop offset="0" stop-color="#f7c7a1"/>
-          <stop offset="1" stop-color="#f2a97b"/>
+        <linearGradient id="capyFur" x1="0" x2="1">
+          <stop offset="0" stop-color="#d2a06e"/>
+          <stop offset="1" stop-color="#b07d4a"/>
         </linearGradient>
-        <linearGradient id="heart" x1="0" x2="1">
+        <linearGradient id="capyEar" x1="0" x2="1">
+          <stop offset="0" stop-color="#b07d4a"/>
+          <stop offset="1" stop-color="#8c6239"/>
+        </linearGradient>
+        <linearGradient id="capyHeart" x1="0" x2="1">
           <stop offset="0" stop-color="#ff4d7d"/>
           <stop offset="1" stop-color="#ff1f68"/>
         </linearGradient>
       </defs>
 
-      <path d="M250 50 C250 33 270 25 282 38
-               C294 25 314 33 314 50
-               C314 78 282 92 282 106
-               C282 92 250 78 250 50Z"
-            fill="url(#heart)"/>
+      <!-- Heart -->
+      <path d="M250 60 C250 43 270 35 282 48
+               C294 35 314 43 314 60
+               C314 88 282 102 282 116
+               C282 102 250 88 250 60Z"
+            fill="url(#capyHeart)"/>
 
-      <path d="M90 120 C90 70 140 40 190 60
-               C240 40 290 70 290 120
-               C290 180 240 210 190 210
-               C140 210 90 180 90 120Z"
-            fill="url(#fur)"/>
-
-      <path d="M110 92 L95 55 L140 78 Z" fill="#f2a97b"/>
-      <path d="M270 92 L285 55 L240 78 Z" fill="#f2a97b"/>
-
-      <circle cx="160" cy="130" r="8"/>
-      <circle cx="220" cy="130" r="8"/>
-
-      <path d="M190 144 C186 144 182 148 182 152
-               C182 160 190 164 190 170
-               C190 164 198 160 198 152
-               C198 148 194 144 190 144Z"
-            fill="#ff7aa2"/>
+      <!-- Capybara body -->
+      <ellipse cx="160" cy="150" rx="90" ry="60" fill="url(#capyFur)"/>
+      <!-- Capybara head -->
+      <ellipse cx="160" cy="100" rx="55" ry="45" fill="url(#capyFur)"/>
+      <!-- Capybara ears -->
+      <ellipse id="capyEarL" cx="120" cy="65" rx="13" ry="18" fill="url(#capyEar)"/>
+      <ellipse id="capyEarR" cx="200" cy="65" rx="13" ry="18" fill="url(#capyEar)"/>
+      <!-- Capybara nose -->
+      <ellipse cx="160" cy="120" rx="10" ry="6" fill="#8c6239"/>
+      <!-- Capybara eyes (normal) -->
+      <ellipse id="capyEyeL" cx="140" cy="100" rx="5" ry="7" fill="#222"/>
+      <ellipse id="capyEyeR" cx="180" cy="100" rx="5" ry="7" fill="#222"/>
+      <!-- Capybara happy eyes (hidden by default) -->
+      <path id="capyHappyL" d="M135 98 Q140 110 145 98" stroke="#222" stroke-width="3" fill="none" style="display:none;"/>
+      <path id="capyHappyR" d="M175 98 Q180 110 185 98" stroke="#222" stroke-width="3" fill="none" style="display:none;"/>
+      <!-- Capybara smile (default) -->
+      <path id="capySmile" d="M150 130 Q160 140 170 130" stroke="#8c6239" stroke-width="3" fill="none"/>
+      <!-- Capybara sad mouth (hidden by default) -->
+      <path id="capySad" d="M150 138 Q160 128 170 138" stroke="#8c6239" stroke-width="3" fill="none" style="display:none;"/>
+      <!-- Capybara arms holding heart -->
+      <path d="M120 170 Q140 160 160 170 Q180 160 200 170" stroke="#8c6239" stroke-width="8" fill="none"/>
+      <!-- Heart in arms -->
+      <path d="M160 170 C155 160 140 160 140 170 C140 185 160 195 160 210 C160 195 180 185 180 170 C180 160 165 160 160 170Z" fill="url(#capyHeart)"/>
     </svg>
 
-    <h1>Lera will you be my valentine?</h1>
+    <h1>Lera, will you be my valentine?</h1>
 
     <section class="button-zone" id="zone">
       <button id="yesBtn">Yes</button>
       <button id="noBtn">No</button>
     </section>
 
-    <!-- HINT -->
+    <!-- HINT (message bubble above capybara) -->
     <div class="hint" id="hint">“No” seems a bit shy 😈</div>
 
     <section class="result" id="result">
@@ -192,6 +320,25 @@
   </main>
 
   <script>
+    // Dark mode toggle
+    const darkToggle = document.getElementById('darkToggle');
+    // Default to dark mode
+    document.body.classList.add('dark');
+    darkToggle.textContent = '☀️ Light Mode';
+    darkToggle.style.background = '#232323';
+    darkToggle.style.color = '#ffeef6';
+    darkToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      if(document.body.classList.contains('dark')) {
+        darkToggle.textContent = '☀️ Light Mode';
+        darkToggle.style.background = '#232323';
+        darkToggle.style.color = '#ffeef6';
+      } else {
+        darkToggle.textContent = '🌙 Dark Mode';
+        darkToggle.style.background = '#e5e7eb';
+        darkToggle.style.color = '#222';
+      }
+    });
     const zone = document.getElementById("zone");
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
@@ -256,6 +403,9 @@
     }
 
     function moveNo(px, py) {
+      // Make capybara sad
+      document.getElementById('capySmile').style.display = 'none';
+      document.getElementById('capySad').style.display = '';
       const z = zone.getBoundingClientRect();
       const b = noBtn.getBoundingClientRect();
 
@@ -265,8 +415,28 @@
       dx /= mag;
       dy /= mag;
 
-      let newLeft = (b.left - z.left) + dx * 150;
-      let newTop  = (b.top - z.top) + dy * 150;
+        let newLeft = (b.left - z.left) + dx * 150;
+        let newTop  = (b.top - z.top) + dy * 150;
+
+        // Prevent No from getting too close to Yes
+        const yesRect = yesBtn.getBoundingClientRect();
+        const minDist = 120; // px, minimum center-to-center distance
+        let tryCount = 0;
+        while (tryCount < 10) {
+          const noCenterX = z.left + newLeft + b.width / 2;
+          const noCenterY = z.top + newTop + b.height / 2;
+          const yesCenterX = yesRect.left + yesRect.width / 2;
+          const yesCenterY = yesRect.top + yesRect.height / 2;
+          const dist = Math.hypot(noCenterX - yesCenterX, noCenterY - yesCenterY);
+          if (dist < minDist) {
+            // Move further away in the same direction
+            newLeft += dx * 30;
+            newTop += dy * 30;
+          } else {
+            break;
+          }
+          tryCount++;
+        }
 
       newLeft = clamp(newLeft, 0, z.width - b.width);
       newTop  = clamp(newTop, 0, z.height - b.height);
@@ -276,6 +446,29 @@
       noBtn.style.transform = "none";
 
       growYes();
+
+      // Throttle hint phrase changes to once every 0.5s
+      if (!window._hintPhrases) {
+        window._hintPhrases = [
+          'Are you sure you want to say No? 😢',
+          'No will break my heart 💔',
+          'Please don\'t click No... 🥺',
+          'No is not an option today! 🚫',
+          'You\'ll make me sad if you click No 😭',
+          'Come on, Yes is the right answer! 💖',
+          'No is running away for a reason! 😬',
+          'Let\'s not even think about No! 🙈',
+          'No is hiding, pick Yes! 🌹',
+          'You know you want to click Yes! 😘'
+        ];
+        window._hintIndex = 0;
+      }
+      const now = Date.now();
+      if (!window._lastHintChange || now - window._lastHintChange > 1200) {
+        window._hintIndex = (window._hintIndex + 1) % window._hintPhrases.length;
+        hint.textContent = window._hintPhrases[window._hintIndex];
+        window._lastHintChange = now;
+      }
     }
 
     zone.addEventListener("pointermove", e => {
@@ -285,17 +478,90 @@
         (b.top + b.height / 2) - e.clientY
       );
       if (d < 140) moveNo(e.clientX, e.clientY);
+      else {
+        // Restore happy face when not near No
+        document.getElementById('capySmile').style.display = '';
+        document.getElementById('capySad').style.display = 'none';
+      }
     });
 
     noBtn.addEventListener("click", e => e.preventDefault());
 
     /* ---------- YES CLICK ---------- */
     yesBtn.addEventListener("click", () => {
-      zone.style.display = "none";
-      hint.style.display = "none";     // HIDE THE HINT
-      result.style.display = "block";
-      resizeConfettiCanvas();
-      fullScreenConfetti();
+      // Capybara blink animation only
+      const eyeL = document.getElementById("capyEyeL");
+      const eyeR = document.getElementById("capyEyeR");
+      if (eyeL && eyeR) {
+        eyeL.setAttribute("ry", "1.5");
+        eyeR.setAttribute("ry", "1.5");
+        setTimeout(() => {
+          eyeL.setAttribute("ry", "7");
+          eyeR.setAttribute("ry", "7");
+        }, 220);
+      }
+      // Fade out bubble and button zone
+      zone.classList.add("fading");
+      hint.classList.add("fading");
+      setTimeout(() => {
+        zone.style.display = "none";
+        hint.style.display = "none";
+        result.classList.add("visible");
+        resizeConfettiCanvas();
+        fullScreenConfetti();
+      }, 500);
+    });
+
+    // Wiggle ears on Yes hover
+    let wiggleInterval = null;
+    let lastHintText = '';
+    yesBtn.addEventListener("mouseenter", () => {
+      // Wiggle ears
+      const earL = document.getElementById("capyEarL");
+      const earR = document.getElementById("capyEarR");
+      if (earL && earR && !wiggleInterval) {
+        let flipped = false;
+        wiggleInterval = setInterval(() => {
+          if (flipped) {
+            earL.setAttribute('transform', 'rotate(0 120 65)');
+            earR.setAttribute('transform', 'rotate(0 200 65)');
+          } else {
+            earL.setAttribute('transform', 'rotate(-18 120 65)');
+            earR.setAttribute('transform', 'rotate(18 200 65)');
+          }
+          flipped = !flipped;
+        }, 220);
+      }
+      // Show positive message
+      lastHintText = hint.textContent;
+      hint.textContent = 'Yay! You made the capybara happy! 🥰';
+      // Show happy eyes
+      document.getElementById('capyEyeL').style.display = 'none';
+      document.getElementById('capyEyeR').style.display = 'none';
+      document.getElementById('capyHappyL').style.display = '';
+      document.getElementById('capyHappyR').style.display = '';
+    });
+    yesBtn.addEventListener("mouseleave", () => {
+      // Stop wiggle
+      const earL = document.getElementById("capyEarL");
+      const earR = document.getElementById("capyEarR");
+      if (wiggleInterval) {
+        clearInterval(wiggleInterval);
+        wiggleInterval = null;
+        if (earL && earR) {
+          earL.setAttribute('transform', 'rotate(0 120 65)');
+          earR.setAttribute('transform', 'rotate(0 200 65)');
+        }
+      }
+      // Restore previous hint
+      if (lastHintText) {
+        hint.textContent = lastHintText;
+      }
+      // Restore normal eyes
+      document.getElementById('capyEyeL').style.display = '';
+      document.getElementById('capyEyeR').style.display = '';
+      document.getElementById('capyHappyL').style.display = 'none';
+      document.getElementById('capyHappyR').style.display = 'none';
     });
   </script>
 </body>
