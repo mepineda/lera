@@ -15,6 +15,8 @@
       --card: #23272ecc;
       --yes: #ff3b7a;
       --yesHover: #ff1f68;
+      --bubble-bg: #2d2d36;
+      --bubble-text: #ffeef6;
       color: #f3e9f7;
     }
     :root {
@@ -23,6 +25,8 @@
       --card: #ffffffcc;
       --yes: #ff3b7a;
       --yesHover: #ff1f68;
+      --bubble-bg: #fffbe7;
+      --bubble-text: #7a5c2e;
     }
 
     * { box-sizing: border-box; }
@@ -33,9 +37,10 @@
       display: grid;
       place-items: center;
       background: radial-gradient(circle at top, var(--bg2), var(--bg1));
-      font-family: system-ui, sans-serif;
+      font-family: system-ui, -apple-system, sans-serif;
       overflow: hidden;
       padding: 16px;
+      transition: background 0.4s ease;
     }
 
     /* FULL-SCREEN CONFETTI CANVAS */
@@ -50,30 +55,38 @@
 
     .card {
       width: min(720px, 96vw);
-      padding: 22px 6vw;
+      padding: 32px 6vw;
       background: var(--card);
       backdrop-filter: blur(10px);
-      border-radius: 22px;
+      border-radius: 24px;
       text-align: center;
-      box-shadow: 0 18px 60px rgba(0,0,0,.15);
+      box-shadow: 0 20px 60px rgba(0,0,0,.15);
+      transition: all 0.4s ease;
     }
 
     .art {
-      width: min(260px, 90vw);
-      margin: 0 auto 10px;
+      width: min(280px, 90vw);
+      margin: 0 auto 20px;
       display: block;
-      filter: drop-shadow(0 10px 14px rgba(0,0,0,.12));
+      filter: drop-shadow(0 12px 20px rgba(0,0,0,.15));
+      transition: transform 0.3s ease;
+    }
+
+    .art:hover {
+      transform: scale(1.05);
     }
 
     h1 {
-      font-size: clamp(26px, 4vw, 44px);
-      margin: 12px 0 18px;
+      font-size: clamp(28px, 5vw, 48px);
+      margin: 16px 0 24px;
+      font-weight: 700;
+      transition: color 0.3s ease;
     }
 
     .button-zone {
       position: relative;
-      width: min(520px, 98vw);
-      height: 170px;
+      width: min(540px, 98vw);
+      height: 200px;
       margin: 0 auto;
       touch-action: none;
     }
@@ -82,76 +95,64 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      padding: 20px 32px;
-      font-size: 22px;
+      padding: 22px 40px;
+      font-size: 24px;
       font-weight: 800;
       border-radius: 999px;
       border: none;
       cursor: pointer;
-      box-shadow: 0 10px 24px rgba(0,0,0,.14);
+      box-shadow: 0 12px 28px rgba(0,0,0,.18);
       user-select: none;
       -webkit-tap-highlight-color: transparent;
-      transition: transform .12s ease, background .12s ease;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    button:active {
+      transform: translateY(-50%) scale(0.95);
     }
 
     #yesBtn {
       left: 18%;
       background: var(--yes);
       color: #fff;
+      transform-origin: center;
     }
-    #yesBtn:hover { background: var(--yesHover); }
+    
+    #yesBtn:hover { 
+      background: var(--yesHover);
+      box-shadow: 0 16px 32px rgba(255, 59, 122, 0.4);
+    }
 
     #noBtn {
       left: 62%;
       background: #e5e7eb;
       color: #111827;
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #noBtn:hover {
+      background: #d1d5db;
     }
 
     .bubble {
       display: inline-block;
       position: relative;
-      margin-bottom: 8px;
+      margin-bottom: 16px;
       margin-top: 0;
-      padding: 16px 20px;
-      font-size: 18px;
-      background: #fffbe7;
-      color: #7a5c2e;
-      border-radius: 18px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+      padding: 28px 36px;
+      font-size: 26px;
+      background: var(--bubble-bg);
+      color: var(--bubble-text);
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
       opacity: 1;
       max-width: 92vw;
-      text-align: left;
+      text-align: center;
       z-index: 2;
-      transition: background 0.3s, color 0.3s;
+      transition: all 0.3s ease;
+      font-weight: 600;
     }
-        @media (max-width: 600px) {
-          .card {
-            padding: 10vw 2vw;
-            border-radius: 14px;
-          }
-          .art {
-            width: 98vw;
-          }
-          .bubble {
-            font-size: 16px;
-            padding: 12px 8px;
-            max-width: 98vw;
-          }
-          .button-zone {
-            width: 99vw;
-            height: 180px;
-          }
-          button {
-            font-size: 20px;
-            padding: 18px 10vw;
-          }
-          #yesBtn {
-            left: 8%;
-          }
-          #noBtn {
-            left: 58%;
-          }
-        }
+
     .bubble::after {
       content: '';
       position: absolute;
@@ -160,85 +161,164 @@
       bottom: -16px;
       width: 0;
       height: 0;
-      border: 10px solid transparent;
-      border-top: 12px solid #fffbe7;
+      border: 12px solid transparent;
+      border-top: 14px solid var(--bubble-bg);
       border-bottom: 0;
-      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.04));
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.08));
       transition: border-top-color 0.3s;
     }
-    body.dark .bubble {
-      background: #2d2d36;
-      color: #ffeef6;
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 8vw 4vw;
+        border-radius: 18px;
+      }
+      .art {
+        width: 85vw;
+      }
+      .bubble {
+        font-size: 20px;
+        padding: 20px 16px;
+        max-width: 90vw;
+      }
+      .button-zone {
+        width: 95vw;
+        height: 180px;
+      }
+      button {
+        font-size: 18px;
+        padding: 16px 24px;
+      }
+      #yesBtn {
+        left: 10%;
+      }
+      #noBtn {
+        left: 60%;
+      }
     }
-    body.dark .bubble::after {
-      border-top-color: #2d2d36;
-    }
+
     body.dark .card {
-      background: var(--card);
-      color: #f3e9f7;
-      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
     }
+
     body.dark h1, body.dark .result h2 {
       color: #ffeef6;
-      text-shadow: 0 2px 8px #181a1b;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
-    body.dark button {
-      background: #353545;
-      color: #ffeef6;
-      border: 1px solid #44445a;
-    }
-    body.dark #yesBtn {
-      background: var(--yes);
-      color: #fff;
-    }
-    body.dark #yesBtn:hover {
-      background: var(--yesHover);
-    }
+
     body.dark #noBtn {
       background: #44445a;
       color: #ffeef6;
+      border: 1px solid #55556f;
     }
+
+    body.dark #noBtn:hover {
+      background: #55556f;
+    }
+
     body.dark #darkToggle {
       background: #353545 !important;
       color: #ffeef6 !important;
       border: 1px solid #44445a;
     }
 
+    #darkToggle {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      z-index: 1000;
+      padding: 10px 20px;
+      border-radius: 20px;
+      border: none;
+      background: #e5e7eb;
+      color: #222;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    #darkToggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    }
+
     .result {
       display: none;
-      margin-top: 18px;
-      animation: pop .35s ease;
+      margin-top: 24px;
       opacity: 0;
-      transition: opacity 0.5s;
+      transition: opacity 0.6s ease;
     }
 
     .result.visible {
       display: block;
       opacity: 1;
+      animation: pop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     }
 
     .bubble, .button-zone {
-      transition: opacity 0.5s;
+      transition: opacity 0.5s ease, transform 0.5s ease;
     }
+    
     .bubble.fading, .button-zone.fading {
       opacity: 0;
+      transform: scale(0.95);
       pointer-events: none;
     }
 
     .result h2 {
-      font-size: clamp(30px, 4.5vw, 46px);
-      margin: 10px 0;
+      font-size: clamp(32px, 5vw, 52px);
+      margin: 12px 0 20px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ff3b7a, #ff6b9d);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    body.dark .result h2 {
+      background: linear-gradient(135deg, #ff5a8f, #ff8bb5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .fireworks {
-      width: min(380px, 90vw);
+      width: min(400px, 90vw);
       margin: 0 auto;
       display: block;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
     }
 
     @keyframes pop {
-      from { transform: scale(.96); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Floating hearts animation */
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+    }
+
+    .floating-heart {
+      position: absolute;
+      animation: float 3s ease-in-out infinite;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    /* Pulse animation for Yes button */
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 12px 28px rgba(255, 59, 122, 0.18); }
+      50% { box-shadow: 0 12px 40px rgba(255, 59, 122, 0.35); }
+    }
+
+    #yesBtn.pulse {
+      animation: pulse 2s ease-in-out infinite;
     }
   </style>
 </head>
@@ -246,10 +326,12 @@
 <body>
   <canvas id="confettiCanvas"></canvas>
 
-  <button id="darkToggle" style="position:absolute;top:18px;right:24px;z-index:1000;padding:8px 18px;border-radius:16px;border:none;background:#e5e7eb;color:#222;font-weight:700;cursor:pointer;transition:background 0.3s;">🌙 Dark Mode</button>
+  <button id="darkToggle">🌙 Dark Mode</button>
+  
   <main class="card">
     <!-- HINT (message bubble above capybara) -->
-    <div class="bubble" id="hint">“No” seems a bit shy 😈</div>
+    <div class="bubble" id="hint">Lera, will you be my valentine? 💕</div>
+    
     <!-- CUTE CAPYBARA WITH HEART -->
     <svg class="art" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -267,50 +349,75 @@
         </linearGradient>
       </defs>
 
-      <!-- Heart -->
+      <!-- Heart floating above -->
       <path d="M250 60 C250 43 270 35 282 48
                C294 35 314 43 314 60
                C314 88 282 102 282 116
                C282 102 250 88 250 60Z"
-            fill="url(#capyHeart)"/>
+            fill="url(#capyHeart)">
+        <animateTransform
+          attributeName="transform"
+          type="translate"
+          values="0,0; 0,-5; 0,0"
+          dur="2s"
+          repeatCount="indefinite"/>
+      </path>
 
       <!-- Capybara body -->
       <ellipse cx="160" cy="150" rx="90" ry="60" fill="url(#capyFur)"/>
+      
       <!-- Capybara head -->
       <ellipse cx="160" cy="100" rx="55" ry="45" fill="url(#capyFur)"/>
+      
       <!-- Capybara ears -->
       <ellipse id="capyEarL" cx="120" cy="65" rx="13" ry="18" fill="url(#capyEar)"/>
       <ellipse id="capyEarR" cx="200" cy="65" rx="13" ry="18" fill="url(#capyEar)"/>
+      
       <!-- Capybara nose -->
       <ellipse cx="160" cy="120" rx="10" ry="6" fill="#8c6239"/>
+      
       <!-- Capybara eyes (normal) -->
-      <ellipse id="capyEyeL" cx="140" cy="100" rx="5" ry="7" fill="#222"/>
-      <ellipse id="capyEyeR" cx="180" cy="100" rx="5" ry="7" fill="#222"/>
+      <ellipse id="capyEyeL" cx="140" cy="100" rx="5" ry="7" fill="#222">
+        <animate id="blinkL" attributeName="ry" values="7;1.5;7" dur="0.3s" begin="indefinite"/>
+      </ellipse>
+      <ellipse id="capyEyeR" cx="180" cy="100" rx="5" ry="7" fill="#222">
+        <animate id="blinkR" attributeName="ry" values="7;1.5;7" dur="0.3s" begin="indefinite"/>
+      </ellipse>
+      
       <!-- Capybara happy eyes (hidden by default) -->
       <path id="capyHappyL" d="M135 98 Q140 110 145 98" stroke="#222" stroke-width="3" fill="none" style="display:none;"/>
       <path id="capyHappyR" d="M175 98 Q180 110 185 98" stroke="#222" stroke-width="3" fill="none" style="display:none;"/>
+      
       <!-- Capybara smile (default) -->
       <path id="capySmile" d="M150 130 Q160 140 170 130" stroke="#8c6239" stroke-width="3" fill="none"/>
+      
       <!-- Capybara sad mouth (hidden by default) -->
       <path id="capySad" d="M150 138 Q160 128 170 138" stroke="#8c6239" stroke-width="3" fill="none" style="display:none;"/>
-      <!-- Capybara arms holding heart -->
-      <path d="M120 170 Q140 160 160 170 Q180 160 200 170" stroke="#8c6239" stroke-width="8" fill="none"/>
+      
+      <!-- Capybara arms -->
+      <ellipse cx="120" cy="150" rx="12" ry="25" fill="url(#capyFur)" transform="rotate(-25 120 150)"/>
+      <ellipse cx="200" cy="150" rx="12" ry="25" fill="url(#capyFur)" transform="rotate(25 200 150)"/>
+      
       <!-- Heart in arms -->
-      <path d="M160 170 C155 160 140 160 140 170 C140 185 160 195 160 210 C160 195 180 185 180 170 C180 160 165 160 160 170Z" fill="url(#capyHeart)"/>
+      <path d="M160 170 C155 160 140 160 140 170 C140 185 160 195 160 210 C160 195 180 185 180 170 C180 160 165 160 160 170Z" fill="url(#capyHeart)">
+        <animateTransform
+          attributeName="transform"
+          type="scale"
+          values="1;1.1;1"
+          dur="1.5s"
+          repeatCount="indefinite"
+          additive="sum"/>
+      </path>
     </svg>
 
-    <h1>Lera, will you be my valentine?</h1>
-
     <section class="button-zone" id="zone">
-      <button id="yesBtn">Yes</button>
+      <button id="yesBtn" class="pulse">Yes! 💖</button>
       <button id="noBtn">No</button>
     </section>
 
-    <!-- HINT (message bubble above capybara) -->
-    <div class="hint" id="hint">“No” seems a bit shy 😈</div>
-
     <section class="result" id="result">
-      <h2>YAY! 🎉</h2>
+      <h2>YAY! 🎉💕</h2>
+      <p style="font-size: 20px; margin: 16px 0; color: inherit; opacity: 0.9;">You just made the happiest capybara in the world!</p>
       <img
         class="fireworks"
         src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif"
@@ -325,20 +432,14 @@
     // Default to dark mode
     document.body.classList.add('dark');
     darkToggle.textContent = '☀️ Light Mode';
-    darkToggle.style.background = '#232323';
-    darkToggle.style.color = '#ffeef6';
+    
     darkToggle.addEventListener('click', () => {
       document.body.classList.toggle('dark');
-      if(document.body.classList.contains('dark')) {
-        darkToggle.textContent = '☀️ Light Mode';
-        darkToggle.style.background = '#232323';
-        darkToggle.style.color = '#ffeef6';
-      } else {
-        darkToggle.textContent = '🌙 Dark Mode';
-        darkToggle.style.background = '#e5e7eb';
-        darkToggle.style.color = '#222';
-      }
+      darkToggle.textContent = document.body.classList.contains('dark') 
+        ? '☀️ Light Mode' 
+        : '🌙 Dark Mode';
     });
+
     const zone = document.getElementById("zone");
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
@@ -366,25 +467,28 @@
     });
 
     function fullScreenConfetti() {
-      const end = Date.now() + 1600;
+      const colors = ['#ff3b7a', '#ff6b9d', '#ffc0cb', '#ff1f68', '#ff8bb5'];
+      const end = Date.now() + 2500;
 
       (function frame() {
         confettiInstance({
-          particleCount: 12,
-          spread: 90,
-          startVelocity: 45,
-          ticks: 180,
-          origin: { x: Math.random(), y: Math.random() * 0.3 }
+          particleCount: 15,
+          spread: 100,
+          startVelocity: 50,
+          ticks: 200,
+          colors: colors,
+          origin: { x: Math.random(), y: Math.random() * 0.4 }
         });
         if (Date.now() < end) requestAnimationFrame(frame);
       })();
 
       setTimeout(() => {
         confettiInstance({
-          particleCount: 300,
-          spread: 140,
-          startVelocity: 60,
-          ticks: 220,
+          particleCount: 400,
+          spread: 160,
+          startVelocity: 65,
+          ticks: 250,
+          colors: colors,
           origin: { x: 0.5, y: 0.55 }
         });
       }, 300);
@@ -393,7 +497,7 @@
     /* ---------- YES BUTTON GROWS ---------- */
     let yesScale = 1;
     function growYes() {
-      yesScale = Math.min(2.2, yesScale + 0.1);
+      yesScale = Math.min(2.5, yesScale + 0.12);
       yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
     }
 
@@ -406,6 +510,7 @@
       // Make capybara sad
       document.getElementById('capySmile').style.display = 'none';
       document.getElementById('capySad').style.display = '';
+      
       const z = zone.getBoundingClientRect();
       const b = noBtn.getBoundingClientRect();
 
@@ -415,28 +520,29 @@
       dx /= mag;
       dy /= mag;
 
-        let newLeft = (b.left - z.left) + dx * 150;
-        let newTop  = (b.top - z.top) + dy * 150;
+      let newLeft = (b.left - z.left) + dx * 160;
+      let newTop  = (b.top - z.top) + dy * 160;
 
-        // Prevent No from getting too close to Yes
-        const yesRect = yesBtn.getBoundingClientRect();
-        const minDist = 120; // px, minimum center-to-center distance
-        let tryCount = 0;
-        while (tryCount < 10) {
-          const noCenterX = z.left + newLeft + b.width / 2;
-          const noCenterY = z.top + newTop + b.height / 2;
-          const yesCenterX = yesRect.left + yesRect.width / 2;
-          const yesCenterY = yesRect.top + yesRect.height / 2;
-          const dist = Math.hypot(noCenterX - yesCenterX, noCenterY - yesCenterY);
-          if (dist < minDist) {
-            // Move further away in the same direction
-            newLeft += dx * 30;
-            newTop += dy * 30;
-          } else {
-            break;
-          }
-          tryCount++;
+      // Prevent No from getting too close to Yes
+      const yesRect = yesBtn.getBoundingClientRect();
+      const minDist = 130;
+      let tryCount = 0;
+      
+      while (tryCount < 10) {
+        const noCenterX = z.left + newLeft + b.width / 2;
+        const noCenterY = z.top + newTop + b.height / 2;
+        const yesCenterX = yesRect.left + yesRect.width / 2;
+        const yesCenterY = yesRect.top + yesRect.height / 2;
+        const dist = Math.hypot(noCenterX - yesCenterX, noCenterY - yesCenterY);
+        
+        if (dist < minDist) {
+          newLeft += dx * 35;
+          newTop += dy * 35;
+        } else {
+          break;
         }
+        tryCount++;
+      }
 
       newLeft = clamp(newLeft, 0, z.width - b.width);
       newTop  = clamp(newTop, 0, z.height - b.height);
@@ -446,63 +552,73 @@
       noBtn.style.transform = "none";
 
       growYes();
+      updateHint();
+    }
 
-      // Throttle hint phrase changes to once every 0.5s
-      if (!window._hintPhrases) {
-        window._hintPhrases = [
-          'Are you sure you want to say No? 😢',
-          'No will break my heart 💔',
-          'Please don\'t click No... 🥺',
-          'No is not an option today! 🚫',
-          'You\'ll make me sad if you click No 😭',
-          'Come on, Yes is the right answer! 💖',
-          'No is running away for a reason! 😬',
-          'Let\'s not even think about No! 🙈',
-          'No is hiding, pick Yes! 🌹',
-          'You know you want to click Yes! 😘'
-        ];
-        window._hintIndex = 0;
-      }
+    // Hint phrases rotation
+    const hintPhrases = [
+      'Are you sure you want to say No? 😢',
+      'The capybara will be sad... 💔',
+      'Please don\'t click No! 🥺',
+      'Yes is definitely the better choice! 💖',
+      'You\'re making me chase you! 😭',
+      'Come on, Yes is waiting! 💕',
+      'No is playing hard to get! 😬',
+      'Why resist? Click Yes! 🌹',
+      'No keeps running away... hint hint! 😉',
+      'You know you want to say Yes! 😘',
+      'The capybara believes in you! 🦫💕'
+    ];
+    let hintIndex = 0;
+    let lastHintChange = 0;
+
+    function updateHint() {
       const now = Date.now();
-      if (!window._lastHintChange || now - window._lastHintChange > 1200) {
-        window._hintIndex = (window._hintIndex + 1) % window._hintPhrases.length;
-        hint.textContent = window._hintPhrases[window._hintIndex];
-        window._lastHintChange = now;
+      if (now - lastHintChange > 800) {
+        hintIndex = (hintIndex + 1) % hintPhrases.length;
+        hint.textContent = hintPhrases[hintIndex];
+        lastHintChange = now;
+        
+        // Add a little bounce animation
+        hint.style.transform = 'scale(1.05)';
+        setTimeout(() => hint.style.transform = 'scale(1)', 150);
       }
     }
 
+    let detectionRadius = 140;
     zone.addEventListener("pointermove", e => {
       const b = noBtn.getBoundingClientRect();
       const d = Math.hypot(
         (b.left + b.width / 2) - e.clientX,
         (b.top + b.height / 2) - e.clientY
       );
-      if (d < 140) moveNo(e.clientX, e.clientY);
-      else {
+      
+      if (d < detectionRadius) {
+        moveNo(e.clientX, e.clientY);
+      } else {
         // Restore happy face when not near No
         document.getElementById('capySmile').style.display = '';
         document.getElementById('capySad').style.display = 'none';
       }
     });
 
-    noBtn.addEventListener("click", e => e.preventDefault());
+    noBtn.addEventListener("click", e => {
+      e.preventDefault();
+      // Extra jump away on click attempt
+      const rect = noBtn.getBoundingClientRect();
+      moveNo(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    });
 
     /* ---------- YES CLICK ---------- */
     yesBtn.addEventListener("click", () => {
-      // Capybara blink animation only
-      const eyeL = document.getElementById("capyEyeL");
-      const eyeR = document.getElementById("capyEyeR");
-      if (eyeL && eyeR) {
-        eyeL.setAttribute("ry", "1.5");
-        eyeR.setAttribute("ry", "1.5");
-        setTimeout(() => {
-          eyeL.setAttribute("ry", "7");
-          eyeR.setAttribute("ry", "7");
-        }, 220);
-      }
+      // Trigger blink animation using SVG animate
+      document.getElementById('blinkL').beginElement();
+      document.getElementById('blinkR').beginElement();
+      
       // Fade out bubble and button zone
       zone.classList.add("fading");
       hint.classList.add("fading");
+      
       setTimeout(() => {
         zone.style.display = "none";
         hint.style.display = "none";
@@ -512,13 +628,14 @@
       }, 500);
     });
 
-    // Wiggle ears on Yes hover
+    // Wiggle ears and show happiness on Yes hover
     let wiggleInterval = null;
-    let lastHintText = '';
+    let originalHintText = hint.textContent;
+    
     yesBtn.addEventListener("mouseenter", () => {
-      // Wiggle ears
       const earL = document.getElementById("capyEarL");
       const earR = document.getElementById("capyEarR");
+      
       if (earL && earR && !wiggleInterval) {
         let flipped = false;
         wiggleInterval = setInterval(() => {
@@ -526,25 +643,28 @@
             earL.setAttribute('transform', 'rotate(0 120 65)');
             earR.setAttribute('transform', 'rotate(0 200 65)');
           } else {
-            earL.setAttribute('transform', 'rotate(-18 120 65)');
-            earR.setAttribute('transform', 'rotate(18 200 65)');
+            earL.setAttribute('transform', 'rotate(-20 120 65)');
+            earR.setAttribute('transform', 'rotate(20 200 65)');
           }
           flipped = !flipped;
-        }, 220);
+        }, 200);
       }
+      
       // Show positive message
-      lastHintText = hint.textContent;
-      hint.textContent = 'Yay! You made the capybara happy! 🥰';
+      originalHintText = hint.textContent;
+      hint.textContent = 'Yay! The capybara is so happy! 🥰✨';
+      
       // Show happy eyes
       document.getElementById('capyEyeL').style.display = 'none';
       document.getElementById('capyEyeR').style.display = 'none';
       document.getElementById('capyHappyL').style.display = '';
       document.getElementById('capyHappyR').style.display = '';
     });
+    
     yesBtn.addEventListener("mouseleave", () => {
-      // Stop wiggle
       const earL = document.getElementById("capyEarL");
       const earR = document.getElementById("capyEarR");
+      
       if (wiggleInterval) {
         clearInterval(wiggleInterval);
         wiggleInterval = null;
@@ -553,18 +673,25 @@
           earR.setAttribute('transform', 'rotate(0 200 65)');
         }
       }
+      
       // Restore previous hint
-      if (lastHintText) {
-        hint.textContent = lastHintText;
-      }
+      hint.textContent = originalHintText;
+      
       // Restore normal eyes
       document.getElementById('capyEyeL').style.display = '';
       document.getElementById('capyEyeR').style.display = '';
       document.getElementById('capyHappyL').style.display = 'none';
       document.getElementById('capyHappyR').style.display = 'none';
     });
+
+    // Random capybara blinks
+    setInterval(() => {
+      if (result.classList.contains('visible')) return;
+      if (Math.random() > 0.7) {
+        document.getElementById('blinkL').beginElement();
+        document.getElementById('blinkR').beginElement();
+      }
+    }, 4000);
   </script>
 </body>
 </html>
-
-
