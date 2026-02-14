@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <title>Will you be my Valentine? 💕</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💕</text></svg>" />
 
@@ -30,7 +32,10 @@
       --bubble-text: #7a5c2e;
     }
 
-    * { box-sizing: border-box; }
+    * { 
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     body {
       margin: 0;
@@ -39,10 +44,12 @@
       place-items: center;
       background: radial-gradient(circle at top, var(--bg2), var(--bg1));
       font-family: system-ui, -apple-system, sans-serif;
-      overflow: hidden;
-      padding: 16px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 12px;
       transition: background 0.4s ease;
       position: relative;
+      touch-action: pan-y pinch-zoom;
     }
 
     /* Floating hearts background */
@@ -91,7 +98,7 @@
 
     .card {
       width: min(720px, 96vw);
-      padding: 32px 6vw;
+      padding: 24px 20px;
       background: var(--card);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
@@ -101,31 +108,34 @@
       transition: all 0.4s ease;
       position: relative;
       z-index: 1;
+      max-width: 100%;
     }
 
     .art {
-      width: min(280px, 90vw);
-      margin: 0 auto 20px;
+      width: min(240px, 70vw);
+      margin: 0 auto 16px;
       display: block;
       filter: drop-shadow(0 12px 20px rgba(0,0,0,.15));
       transition: transform 0.3s ease;
     }
 
-    .art:hover {
-      transform: scale(1.05);
+    .art:active {
+      transform: scale(0.98);
     }
 
     h1 {
-      font-size: clamp(28px, 5vw, 48px);
-      margin: 16px 0 24px;
+      font-size: clamp(24px, 6vw, 48px);
+      margin: 12px 0 20px;
       font-weight: 700;
       transition: color 0.3s ease;
+      line-height: 1.2;
     }
 
     .button-zone {
       position: relative;
-      width: min(540px, 98vw);
-      height: 200px;
+      width: 100%;
+      max-width: 540px;
+      height: 180px;
       margin: 0 auto;
       touch-action: none;
     }
@@ -134,8 +144,8 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      padding: 22px 40px;
-      font-size: 24px;
+      padding: 18px 32px;
+      font-size: 20px;
       font-weight: 800;
       border-radius: 999px;
       border: none;
@@ -144,6 +154,8 @@
       user-select: none;
       -webkit-tap-highlight-color: transparent;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      touch-action: manipulation;
+      white-space: nowrap;
     }
 
     button:active {
@@ -151,49 +163,52 @@
     }
 
     #yesBtn {
-      left: 18%;
+      left: 8%;
       background: var(--yes);
       color: #fff;
       transform-origin: center center;
       will-change: transform;
+      z-index: 2;
     }
     
-    #yesBtn:hover { 
+    #yesBtn:hover, #yesBtn:active { 
       background: var(--yesHover);
       box-shadow: 0 16px 32px rgba(255, 59, 122, 0.4);
     }
 
     #noBtn {
-      left: 62%;
+      left: 58%;
       background: #e5e7eb;
       color: #111827;
       transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1;
     }
 
-    #noBtn:hover {
+    #noBtn:hover, #noBtn:active {
       background: #d1d5db;
     }
 
     .bubble {
       display: inline-block;
       position: relative;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       margin-top: 0;
-      padding: 28px 36px;
-      font-size: 26px;
+      padding: 20px 24px;
+      font-size: 18px;
       background: var(--bubble-bg);
       color: var(--bubble-text);
-      border-radius: 20px;
+      border-radius: 16px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.15);
       opacity: 1;
       max-width: 92vw;
-      min-width: 100;
+      min-width: 0;
       width: auto;
       text-align: center;
       word-break: break-word;
       z-index: 2;
       transition: all 0.3s ease;
       font-weight: 600;
+      line-height: 1.4;
     }
 
     .bubble::after {
@@ -201,45 +216,126 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      bottom: -16px;
+      bottom: -12px;
       width: 0;
       height: 0;
-      border: 12px solid transparent;
-      border-top: 14px solid var(--bubble-bg);
+      border: 10px solid transparent;
+      border-top: 12px solid var(--bubble-bg);
       border-bottom: 0;
       filter: drop-shadow(0 2px 3px rgba(0,0,0,0.08));
       transition: border-top-color 0.3s;
     }
 
+    /* Mobile-specific styles */
     @media (max-width: 600px) {
+      body {
+        padding: 8px;
+      }
+
       .card {
-        padding: 8vw 4vw;
-        border-radius: 18px;
-      }
-      .art {
-        width: 85vw;
-      }
-      .bubble {
-        font-size: 20px;
         padding: 20px 16px;
-        max-width: 90vw;
-        min-width: 0;
-        width: auto;
-        word-break: break-word;
+        border-radius: 20px;
+        width: 100%;
       }
+      
+      .art {
+        width: min(200px, 65vw);
+        margin-bottom: 12px;
+      }
+      
+      .bubble {
+        font-size: 16px;
+        padding: 16px 20px;
+        max-width: 94vw;
+        border-radius: 14px;
+      }
+
+      .bubble::after {
+        bottom: -10px;
+        border-width: 8px;
+        border-top-width: 10px;
+      }
+      
       .button-zone {
-        width: 95vw;
-        height: 200px;
+        width: 100%;
+        height: 160px;
+        max-width: none;
       }
+      
       button {
-        font-size: 18px;
-        padding: 16px 24px;
+        font-size: 17px;
+        padding: 14px 24px;
+        min-width: 100px;
       }
+      
       #yesBtn {
-        left: 5%;
+        left: 4%;
       }
+      
       #noBtn {
-        left: 65%;
+        left: 55%;
+      }
+
+      h1 {
+        font-size: clamp(20px, 7vw, 32px);
+      }
+    }
+
+    /* Extra small screens */
+    @media (max-width: 380px) {
+      .bubble {
+        font-size: 15px;
+        padding: 14px 18px;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 12px 20px;
+      }
+
+      .button-zone {
+        height: 140px;
+      }
+
+      #yesBtn {
+        left: 2%;
+      }
+
+      #noBtn {
+        left: 52%;
+      }
+    }
+
+    /* Landscape mobile */
+    @media (max-height: 600px) and (orientation: landscape) {
+      body {
+        padding: 8px;
+      }
+
+      .card {
+        padding: 16px 20px;
+        max-height: 95vh;
+        overflow-y: auto;
+      }
+
+      .art {
+        width: min(180px, 50vw);
+        margin-bottom: 8px;
+      }
+
+      .bubble {
+        font-size: 15px;
+        padding: 12px 18px;
+        margin-bottom: 8px;
+      }
+
+      .button-zone {
+        height: 120px;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 10px 20px;
       }
     }
 
@@ -258,7 +354,7 @@
       border: 1px solid #55556f;
     }
 
-    body.dark #noBtn:hover {
+    body.dark #noBtn:hover, body.dark #noBtn:active {
       background: #55556f;
     }
 
@@ -269,30 +365,30 @@
     }
 
     #darkToggle {
-      position: absolute;
-      top: 20px;
-      right: 24px;
+      position: fixed;
+      top: 12px;
+      right: 12px;
       z-index: 1000;
-      padding: 10px 20px;
+      padding: 8px 16px;
       border-radius: 20px;
       border: none;
       background: #e5e7eb;
       color: #222;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 13px;
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      touch-action: manipulation;
     }
 
-    #darkToggle:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    #darkToggle:active {
+      transform: scale(0.95);
     }
 
     .result {
       display: none;
-      margin-top: 24px;
+      margin-top: 20px;
       opacity: 0;
       transition: opacity 0.6s ease;
     }
@@ -314,14 +410,15 @@
     }
 
     .result h2 {
-      font-size: clamp(32px, 5vw, 52px);
-      margin: 12px 0 20px;
+      font-size: clamp(28px, 7vw, 52px);
+      margin: 12px 0 16px;
       font-weight: 800;
       color: #ff3b7a;
       background: linear-gradient(135deg, #ff3b7a, #ff6b9d);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      line-height: 1.2;
     }
 
     body.dark .result h2 {
@@ -332,31 +429,29 @@
       background-clip: text;
     }
 
+    .result p {
+      font-size: clamp(16px, 4vw, 20px);
+      margin: 12px 0;
+      color: inherit;
+      opacity: 0.9;
+      line-height: 1.5;
+      padding: 0 8px;
+    }
+
     .fireworks {
       width: min(400px, 90vw);
-      margin: 0 auto;
+      margin: 12px auto 0;
       display: block;
       border-radius: 16px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      max-width: 100%;
+      height: auto;
     }
 
     @keyframes pop {
       0% { transform: scale(0.8); opacity: 0; }
       50% { transform: scale(1.05); }
       100% { transform: scale(1); opacity: 1; }
-    }
-
-    /* Floating hearts animation */
-    @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-20px) rotate(5deg); }
-    }
-
-    .floating-heart {
-      position: absolute;
-      animation: float 3s ease-in-out infinite;
-      opacity: 0.7;
-      pointer-events: none;
     }
 
     /* Pulse animation for Yes button */
@@ -368,6 +463,12 @@
     #yesBtn.pulse {
       animation: pulse 2s ease-in-out infinite;
     }
+
+    /* Prevent text selection on mobile */
+    .card, .bubble, button, h1, h2 {
+      -webkit-user-select: none;
+      user-select: none;
+    }
   </style>
 </head>
 
@@ -377,7 +478,7 @@
 
   <canvas id="confettiCanvas"></canvas>
 
-  <button id="darkToggle">🌙 Dark Mode</button>
+  <button id="darkToggle">🌙</button>
   
   <main class="card">
     <!-- HINT (message bubble above capybara) -->
@@ -468,7 +569,7 @@
 
     <section class="result" id="result">
       <h2>YAY! 🎉💕</h2>
-      <p style="font-size: 20px; margin: 16px 0; color: inherit; opacity: 0.9;">You just made the happiest capybara in the world, See you later!</p>
+      <p>You just made the happiest capybara in the world, See you later!</p>
       <img
         class="fireworks"
         src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif"
@@ -478,12 +579,13 @@
   </main>
 
   <script>
-    // Create floating hearts background
+    // Create floating hearts background (reduced for mobile performance)
     function createFloatingHearts() {
       const container = document.getElementById('floatingHearts');
       const hearts = ['💕', '💖', '💗', '💝', '💓'];
+      const heartCount = window.innerWidth < 600 ? 10 : 15;
       
-      for (let i = 0; i < 15; i++) {
+      for (let i = 0; i < heartCount; i++) {
         const heart = document.createElement('div');
         heart.className = 'heart-particle';
         heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
@@ -499,13 +601,11 @@
     const darkToggle = document.getElementById('darkToggle');
     // Default to dark mode
     document.body.classList.add('dark');
-    darkToggle.textContent = '☀️ Light Mode';
+    darkToggle.textContent = '☀️';
     
     darkToggle.addEventListener('click', () => {
       document.body.classList.toggle('dark');
-      darkToggle.textContent = document.body.classList.contains('dark') 
-        ? '☀️ Light Mode' 
-        : '🌙 Dark Mode';
+      darkToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
     });
 
     const zone = document.getElementById("zone");
@@ -537,10 +637,12 @@
     function fullScreenConfetti() {
       const colors = ['#ff3b7a', '#ff6b9d', '#ffc0cb', '#ff1f68', '#ff8bb5'];
       const end = Date.now() + 2500;
+      const isMobile = window.innerWidth < 600;
+      const particleCount = isMobile ? 10 : 15;
 
       (function frame() {
         confettiInstance({
-          particleCount: 15,
+          particleCount: particleCount,
           spread: 100,
           startVelocity: 50,
           ticks: 200,
@@ -552,7 +654,7 @@
 
       setTimeout(() => {
         confettiInstance({
-          particleCount: 400,
+          particleCount: isMobile ? 200 : 400,
           spread: 160,
           startVelocity: 65,
           ticks: 250,
@@ -566,8 +668,8 @@
     let yesScale = 1;
     function growYes() {
       // Limit scaling on mobile to prevent overflow
-      const maxScale = window.innerWidth < 600 ? 1.8 : 2.5;
-      yesScale = Math.min(maxScale, yesScale + 0.12);
+      const maxScale = window.innerWidth < 600 ? 1.6 : 2.5;
+      yesScale = Math.min(maxScale, yesScale + 0.1);
       yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
     }
 
@@ -590,12 +692,14 @@
       dx /= mag;
       dy /= mag;
 
-      let newLeft = (b.left - z.left) + dx * 160;
-      let newTop  = (b.top - z.top) + dy * 160;
+      // Adjusted movement for mobile
+      const jumpDistance = window.innerWidth < 600 ? 120 : 160;
+      let newLeft = (b.left - z.left) + dx * jumpDistance;
+      let newTop  = (b.top - z.top) + dy * jumpDistance;
 
       // Prevent No from getting too close to Yes
       const yesRect = yesBtn.getBoundingClientRect();
-      const minDist = 130;
+      const minDist = window.innerWidth < 600 ? 100 : 130;
       let tryCount = 0;
       
       while (tryCount < 10) {
@@ -606,8 +710,8 @@
         const dist = Math.hypot(noCenterX - yesCenterX, noCenterY - yesCenterY);
         
         if (dist < minDist) {
-          newLeft += dx * 35;
-          newTop += dy * 35;
+          newLeft += dx * 30;
+          newTop += dy * 30;
         } else {
           break;
         }
@@ -656,7 +760,8 @@
       }
     }
 
-    let detectionRadius = 140;
+    // Increase detection radius on mobile for better touch interaction
+    let detectionRadius = window.innerWidth < 600 ? 200 : 140;
     
     // Handle both mouse and touch events
     zone.addEventListener("pointermove", e => {
@@ -674,11 +779,6 @@
         document.getElementById('capySad').style.display = 'none';
       }
     });
-    
-    // Increase detection radius on mobile for better touch interaction
-    if ('ontouchstart' in window) {
-      detectionRadius = 180;
-    }
 
     noBtn.addEventListener("click", e => {
       e.preventDefault();
@@ -714,11 +814,11 @@
       }, 500);
     });
 
-    // Wiggle ears and show happiness on Yes hover
+    // Wiggle ears and show happiness on Yes interaction (hover/touch)
     let wiggleInterval = null;
     let originalHintText = hint.textContent;
     
-    yesBtn.addEventListener("mouseenter", () => {
+    function startYesHover() {
       const earL = document.getElementById("capyEarL");
       const earR = document.getElementById("capyEarR");
       
@@ -745,9 +845,9 @@
       document.getElementById('capyEyeR').style.display = 'none';
       document.getElementById('capyHappyL').style.display = '';
       document.getElementById('capyHappyR').style.display = '';
-    });
+    }
     
-    yesBtn.addEventListener("mouseleave", () => {
+    function endYesHover() {
       const earL = document.getElementById("capyEarL");
       const earR = document.getElementById("capyEarR");
       
@@ -768,7 +868,16 @@
       document.getElementById('capyEyeR').style.display = '';
       document.getElementById('capyHappyL').style.display = 'none';
       document.getElementById('capyHappyR').style.display = 'none';
-    });
+    }
+
+    // Mouse events
+    yesBtn.addEventListener("mouseenter", startYesHover);
+    yesBtn.addEventListener("mouseleave", endYesHover);
+    
+    // Touch events for mobile
+    yesBtn.addEventListener("touchstart", startYesHover);
+    yesBtn.addEventListener("touchend", endYesHover);
+    yesBtn.addEventListener("touchcancel", endYesHover);
 
     // Random capybara blinks
     function blinkCapybara() {
@@ -777,20 +886,22 @@
       const eyeL = document.getElementById('capyEyeL');
       const eyeR = document.getElementById('capyEyeR');
       
-      // Try SVG animation first, fallback to manual animation
-      if (blinkL && blinkR && typeof blinkL.beginElement === 'function') {
-        blinkL.beginElement();
-        blinkR.beginElement();
-      } else if (eyeL && eyeR) {
-        // Fallback for browsers that don't support SVG animations
-        const originalRyL = eyeL.getAttribute('ry');
-        const originalRyR = eyeR.getAttribute('ry');
-        eyeL.setAttribute('ry', '1.5');
-        eyeR.setAttribute('ry', '1.5');
-        setTimeout(() => {
-          eyeL.setAttribute('ry', originalRyL || '7');
-          eyeR.setAttribute('ry', originalRyR || '7');
-        }, 220);
+      // Only blink if eyes are visible (not in happy state)
+      if (eyeL && eyeR && eyeL.style.display !== 'none') {
+        if (blinkL && blinkR && typeof blinkL.beginElement === 'function') {
+          blinkL.beginElement();
+          blinkR.beginElement();
+        } else {
+          // Fallback for browsers that don't support SVG animations
+          const originalRyL = eyeL.getAttribute('ry');
+          const originalRyR = eyeR.getAttribute('ry');
+          eyeL.setAttribute('ry', '1.5');
+          eyeR.setAttribute('ry', '1.5');
+          setTimeout(() => {
+            eyeL.setAttribute('ry', originalRyL || '7');
+            eyeR.setAttribute('ry', originalRyR || '7');
+          }, 220);
+        }
       }
     }
     
@@ -800,6 +911,16 @@
         blinkCapybara();
       }
     }, 4000);
+
+    // Prevent double-tap zoom on buttons
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', (e) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
   </script>
 </body>
 </html>
